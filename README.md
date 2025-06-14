@@ -208,7 +208,7 @@ Server, e.g. `116.203.78.54`. You the a website like this?
 - Edit the HTML code of this page with `nano`
 
   ```bash
-  sudo nano /var/www.html/alternatives/alternate-index.html
+  sudo nano /var/www/html/alternatives/alternate-index.html
   ```
 
   After the edit the code could lock like this:
@@ -326,5 +326,9 @@ for the default nginx configuration.
 
 - Open the public ssh key an copy it with `sudo cat ~/.ssh/<your_file_name>.pub`
 
-  >[!WARNING]
+  > [!WARNING]
   > For security reasons, always use the file with the `.pub` file extension
+
+- Store the ssh key in your github account under `Settings/SSH and GPG keys`
+
+  ![github-ssh](./img/github-ssh.png)

@@ -307,6 +307,24 @@ for the default nginx configuration.
   }
   ```
 
-  ---
+---
 
-  ## Git setup
+## Git setup
+
+- Check if git is installed on the server with `git --version`. You should see something like this in your terminal:
+
+  ![git-version](./img/git-version.png)
+
+- Create a new ssh key on the VM server:
+
+  ```bash
+  ssh-keygen -t ed25519
+  ```
+
+  Confirm the save path and file name or adjust it according to your wishes. You can also assign a password if you wish. This process
+  has already been described above when the ssh key was created for the local machine.
+
+- Open the public ssh key an copy it with `sudo cat ~/.ssh/<your_file_name>.pub`
+
+  >[!WARNING]
+  > For security reasons, always use the file with the `.pub` file extension

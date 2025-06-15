@@ -153,25 +153,25 @@ ssh -o PubkeyAuthentication=no ojung@116.203.78.54</code></pre>
                 <img src="./img/nginx-html.png" alt="nginx-html">
             </li>
             <li>Create a new folder for the alternative start page:
-                <pre><code>sudo mkdir /var/www/html/alternatives</code></pre>
+                <pre><code>sudo mkdir /var/www/html/web</code></pre>
             </li>
             <li>Create a new empty HTML file. This page wird the new start page for our nginx setup.
-                <pre><code>sudo touch /var/www/html/alternatives/alternate-index.html</code></pre>
+                <pre><code>sudo touch /var/www/html/web/alternate-index.html</code></pre>
             </li>
             <li>Edit the HTML code of this page with <code>nano</code>
-                <pre><code>sudo nano /var/www.html/alternatives/alternate-index.html</code></pre>
+                <pre><code>sudo nano /var/www/html/web/alternate-index.html</code></pre>
                 After the edit the code could lock like this:
                 <img src="./img/new_html.png" alt="new_html">
             </li>
             <li>Save the file with <code>CTRL+S</code> and leave the editor with <code>CTRL+X</code></li>
             <li>Add a new nginx configuration for the enabled sites
-                <pre><code>sudo nano /etc/nginx/sites-enabled/alternatives</code></pre>
+                <pre><code>sudo nano /etc/nginx/sites-enabled/web</code></pre>
                 Enter the following to this file:
                 <pre><code>server {
       listen 8081;
       listen [::]:8081;
 
-      root /var/www/alternatives;
+      root /var/www/http/alternatives;
       index alternate-index.html;
 
       location / {
@@ -261,8 +261,67 @@ server {
             </li>
             <li>Store the ssh key in your github account under <code>Settings/SSH and GPG keys</code>
                 <img src="./img/github-ssh.png" alt="github-ssh">
+                Now it is possible to work with git on the VM-Server.
             </li>
         </ul>
+
+        <hr>
+
+        <h2>Publication of this documentation as a website [Additional configuration (optional)]</h2>
+        <ul>
+            <li>Create new folder <code>vm-setup</code> inside the <code>web</code> folder
+                <pre><code>sudo mkdir /var/www/html/web/vm-setup</code></pre>
+            </li>
+            <li>Navigate to this folder with <code>cd /var/www/html/web/vm-setup</code></li>
+            <li>Clone the repository into this folder:
+                <pre><code>sudo git clone https://github.com/oljungde/v-server-setup.git .</code></pre>
+            </li>
+            <li>Edit the nginx configuration for web
+                <pre><code>sudo nano /etc/nginx/sites-enabled/web</code></pre>
+                <ul>
+                    <li>Change the file content to:
+                        <pre><code>server {
+  listen 80;
+  listen [::]:80;
+
+  server_name _;
+
+  location / {
+      proxy_pass http://127.0.0.1:8081;
+
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+  }
+}
+
+server {
+  listen 8081;
+  listen [::]:8081;
+
+  root /var/www/html/web;
+  index alternate-index.html index.html;
+
+  location / {
+      try_files $uri $uri/ =404;
+  }
+}</code></pre>
+                    </li>
+                    <li>The first server block serves as a reverse proxy and ensures that all requests arriving at port
+                        80 are forwarded to port 8081.</li>
+                    <li>The second server block is the actual web server configuration, which can be accessed via the
+                        proxy.</li>
+                </ul>
+            </li>
+            <li>Delete the default nginx configuration, otherwise our site would still not be accessible
+                <pre><code>sudo rm /etc/nginx/sites-enabled/default</code></pre>
+            </li>
+            <li>Restart the nginx service with <code>sudo systemctl restart nginx.service</code></li>
+            <li>The modified "nginx homepage" is now available at <code>http://116.203.78.54</code> and this
+                documentation is available as a website at <code>http://116.203.78.54/vm-setup</code></li>
+        </ul>
+
     </div>
 
 </body>

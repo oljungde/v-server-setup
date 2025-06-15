@@ -13,6 +13,7 @@
   - [Install nginx](#install-nginx)
   - [Alternative nginx configuration](#alternative-nginx-configuration)
 - [Git setup](#git-setup)
+- [Publication of this documentation as a website [Additional configuration optional]](#publication-of-this-documentation-as-a-website-additional-configuration-optional)
 
 <!-- /TOC -->
 ## Description assignment

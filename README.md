@@ -8,7 +8,7 @@
   - [First login to the server and setting up an SSH key](#first-login-to-the-server-and-setting-up-an-ssh-key)
     - [Test login on the server](#test-login-on-the-server)
     - [Generate a ssh key and deposit it on the server](#generate-a-ssh-key-and-deposit-it-on-the-server)
-    - [ssh key generation](#ssh-key-generation)
+    - [SSH key generation](#ssh-key-generation)
     - [Copy ssh key to VM-Server](#copy-ssh-key-to-vm-server)
   - [Deactivate password login](#deactivate-password-login)
   - [Webserver configuration with nginx](#webserver-configuration-with-nginx)
@@ -26,6 +26,8 @@ This readme file describes how the project task ‘V-Server-Setup’ is solved a
 
 ## Quickstart
 
+- Test login on the server with `ssh <your_username>@<your_ip>`
+
 ## Usage
 
 ### <ins>First login to the server and setting up an SSH key</ins>
@@ -41,15 +43,13 @@ This readme file describes how the project task ‘V-Server-Setup’ is solved a
   Replace `<your_username>` and `<your_ip>` with your actual login data, e.g.:
 
   ```bash
-  ssh jdoe@555.555.555.555
+  ssh jdoe@123.456.789.0
   ```
 
 - For the first time of login you will see a message, that you are unknown for the server. You have to "create" a
-fingerprint on the server:
+fingerprint on the server. If necessary, confirm by entering `yes` in the command shell
 
   ![fingerprint](./img/fingerprint.png)
-
-- Type `yes` in the command shell.
 
 - After this you have to authenticate with your password. Now you should see something like this in your command shell:
 
@@ -63,7 +63,7 @@ fingerprint on the server:
 
 #### <ins>Generate a ssh key and deposit it on the server</ins>
 
-#### <ins>ssh key generation</ins>
+#### <ins>SSH key generation</ins>
 
 > [!WARNING]
 > To generate a ssh key use a new command line on your <ins>**local machine**</ins>
@@ -406,7 +406,9 @@ for the default nginx configuration.
 
 ### <ins>Publication of this documentation as a website</ins>
 
-This was not part of the actual task. This is to show how to create and manage another website on the nginx server.
+This was not required to fulfill the task, as an optional extension I decided to make this README available as
+index.html via nginx on the server. The HTML code can be found [here](./src/index.html) and the CSS code
+[here](./src/styles.css).
 
 - Create new folder `vm-setup` inside the `web` folder
 

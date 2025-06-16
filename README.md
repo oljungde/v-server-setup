@@ -3,17 +3,19 @@
 <!-- TOC depthfrom:2 depthto:6 -->
 
 - [Description assignment](#description-assignment)
-- [First login to the server and setting up an SSH key](#first-login-to-the-server-and-setting-up-an-ssh-key)
-  - [Test login on the server](#test-login-on-the-server)
-  - [Generate a ssh key and deposit it on the server](#generate-a-ssh-key-and-deposit-it-on-the-server)
+- [Quickstart](#quickstart)
+- [Usage](#usage)
+  - [First login to the server and setting up an SSH key](#first-login-to-the-server-and-setting-up-an-ssh-key)
+    - [Test login on the server](#test-login-on-the-server)
+    - [Generate a ssh key and deposit it on the server](#generate-a-ssh-key-and-deposit-it-on-the-server)
     - [ssh key generation](#ssh-key-generation)
     - [Copy ssh key to VM-Server](#copy-ssh-key-to-vm-server)
-- [Deactivate password login](#deactivate-password-login)
-- [Webserver configuration with nginx](#webserver-configuration-with-nginx)
-  - [Install nginx](#install-nginx)
-  - [Alternative nginx configuration](#alternative-nginx-configuration)
-- [Git setup](#git-setup)
-- [Publication of this documentation as a website [Additional configuration optional]](#publication-of-this-documentation-as-a-website-additional-configuration-optional)
+  - [Deactivate password login](#deactivate-password-login)
+  - [Webserver configuration with nginx](#webserver-configuration-with-nginx)
+    - [Install nginx](#install-nginx)
+    - [Alternative nginx configuration](#alternative-nginx-configuration)
+  - [Git setup](#git-setup)
+  - [Publication of this documentation as a website](#publication-of-this-documentation-as-a-website)
 
 <!-- /TOC -->
 ## Description assignment
@@ -22,9 +24,13 @@ This readme file describes how the project task ‘V-Server-Setup’ is solved a
 
 ---
 
-## First login to the server and setting up an SSH key
+## Quickstart
 
-### Test login on the server
+## Usage
+
+### <ins>First login to the server and setting up an SSH key</ins>
+
+#### <ins>Test login on the server</ins>
 
 - To test the login on the server, try to log on to the server via ssh with username and password. Open a command line such as `cmd` or `git-bash`. Use the following command to establish a connection to your server:
 
@@ -55,9 +61,9 @@ fingerprint on the server:
   logout
   ```
 
-### Generate a ssh key and deposit it on the server
+#### <ins>Generate a ssh key and deposit it on the server</ins>
 
-#### ssh key generation
+#### <ins>ssh key generation</ins>
 
 > [!WARNING]
 > To generate a ssh key use a new command line on your <ins>**local machine**</ins>
@@ -72,7 +78,7 @@ The system will ask you under which file path the new ssh key should be saved. Y
 
   ![create_ssh_key](./img/create_ssh_key.png)
 
-#### Copy ssh key to VM-Server
+#### <ins>Copy ssh key to VM-Server</ins>
 
 - To copy the generated ssh to your VM use the following command. Make sure you are on your local machine command line:
 
@@ -97,7 +103,7 @@ following output in the terminal.
 
 ---
 
-## Deactivate password login
+### <ins>Deactivate password login</ins>
 
 For security reasons, it is advisable to deactivate the password login on the VM. For example, a password can be cracked
 using a brute force attack.
@@ -147,12 +153,12 @@ Perfect, this is exactly what we want.
 
 ---
 
-## Webserver configuration with nginx
+### <ins>Webserver configuration with nginx</ins>
 
 A web server delivers static or dynamic files, for example for a web application or a website. nginx is used for this
 server, another option would be Apache, for example.
 
-### Install nginx
+#### <ins>Install nginx</ins>
 
 - To use the VM as a Webserver it is needed to install nginx. First it is recommended to update the installed packages on
 the VM. Use:
@@ -182,7 +188,7 @@ Server, e.g. `116.203.78.54`. You the a website like this?
 
   ![webserver_running](./img/webserver_running.png)
 
-### Alternative nginx configuration
+#### <ins>Alternative nginx configuration</ins>
 
 - To see the code of the nginx start page, it is possible zo use the `cat` command on the VM:
 
@@ -192,7 +198,37 @@ Server, e.g. `116.203.78.54`. You the a website like this?
 
 - Now the HTML code of the page is displayed in the command line:
 
-  ![nginx-html](./img/nginx-html.png)
+  ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+  <title>Welcome to nginx!</title>
+  <style>
+      body {
+          width: 35em;
+          margin: 0 auto;
+          font-family: Tahoma, Verdana, Arial, sans-serif;
+      }
+  </style>
+  </head>
+  <body>
+    <h1>Welcome to nginx!</h1>
+    <p>
+      If you see this page, the nginx web server is successfully installed and working.
+      Further configuration is required.
+    </p>
+
+    <p>For online documentation and support please refer to
+    <a href="http://nginx.org/">nginx.org</a>.<br/>
+    Commercial support is available at
+    <a href="http://nginx.com/">nginx.com</a>.</p>
+
+    <p><em>Thank you for using nginx.</em></p>
+  </body>
+  </html>
+  ```
+
+  You can find this code also [here](./src/index.nginx-debain.html).
 
 - Create a new folder for the alternative start page:
 
@@ -214,7 +250,37 @@ Server, e.g. `116.203.78.54`. You the a website like this?
 
   After the edit the code could lock like this:
 
-  ![new-html](./img/new_html.png)
+  ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+  <title>Welcome to nginx!</title>
+  <style>
+      body {
+          width: 35em;
+          margin: 0 auto;
+          font-family: Tahoma, Verdana, Arial, sans-serif;
+      }
+  </style>
+  </head>
+  <body>
+    <h1>Welcome to this alternate nginx start page!</h1>
+    <p>
+      If you see this page, the alternate nginx start page is suIf the page is visible, the alternative nginx start
+      page has been set up successfully. Further configuration is required to work with this webserver..
+    </p>
+
+    <p>For online documentation and support please refer to
+    <a href="http://nginx.org/">nginx.org</a>.<br/>
+    Commercial support is available at
+    <a href="http://nginx.com/">nginx.com</a>.</p>
+
+    <p><em>Thank you for using nginx.</em></p>
+  </body>
+  </html>
+  ```
+
+  You can find this code also [here](./src/alternate-index.html)
 
 - Save the file with `CTRL+S` and leave the editor with `CTRL+X`
 
@@ -310,7 +376,7 @@ for the default nginx configuration.
 
 ---
 
-## Git setup
+### <ins>Git setup</ins>
 
 - Check if git is installed on the server with `git --version`. You should see something like this in your terminal:
 
@@ -336,9 +402,11 @@ for the default nginx configuration.
 
   Now it is possible to work with git on the VM-Server.
 
-  ---
+---
 
-## Publication of this documentation as a website [Additional configuration (optional)]
+### <ins>Publication of this documentation as a website</ins>
+
+This was not part of the actual task. This is to show how to create and manage another website on the nginx server.
 
 - Create new folder `vm-setup` inside the `web` folder
 

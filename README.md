@@ -26,7 +26,28 @@ This readme file describes how the project task ‘V-Server-Setup’ is solved a
 
 ## Quickstart
 
-- Test login on the server with `ssh <your_username>@<your_ip>`
+Here you will find a brief description of how to set up a preconfigured VM server with Ubuntu operating system. A detailed description of the individual points can be found in the usage section below
+
+1. First Login and SSH Key Setup:
+    - Test the initial login via ssh `<your_username>@<your_ip>`.
+    - Generate a new SSH key locally (e.g., with `ssh-keygen -t ed25519`).
+    - Copy the public key to the server using `ssh-copy-id`.
+2. Disable Password Login:
+    - Edit the `/etc/ssh/sshd_config` file on the server.
+    - Change `PasswordAuthentication yes` to `PasswordAuthentication no` to disable login with username and password.
+    - Restart the SSH service using `sudo systemctl restart ssh.service`.
+3. Install Nginx Web Server:
+    - Update the package lists with `sudo apt update`.
+    - Install Nginx with `sudo apt install nginx -y`.
+    - Check the status with `sudo systemctl status nginx.service`.
+4. Configure Nginx for an Alternative Start Page:
+    - Create a new HTML file (e.g., alternate-index.html) in the web directory (e.g., `/var/www/html/web/`).
+    - Create a new Nginx configuration file under `/etc/nginx/sites-enabled/` (e.g., web) that points to the new page and a different port (e.g., 8081).
+    - Restart Nginx with `sudo service nginx restart`.
+5. Set Up Git on the Server:
+    - Check if Git is installed, `git --version`.
+    - Generate a new SSH key on the VM server with `ssh-keygen -t ed25519`.
+    - Add the public key `~/.ssh/<your_file_name>.pub` to your GitHub account.
 
 ## Usage
 

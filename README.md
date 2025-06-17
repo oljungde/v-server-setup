@@ -49,6 +49,8 @@ Here you will find a brief description of how to set up a preconfigured VM serve
     - Generate a new SSH key on the VM server with `ssh-keygen -t ed25519`.
     - Add the public key `~/.ssh/<your_file_name>.pub` to your GitHub account.
 
+---
+
 ## Usage
 
 ### <ins>First login to the server and setting up an SSH key</ins>

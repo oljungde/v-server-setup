@@ -3,6 +3,7 @@
 <!-- TOC depthfrom:2 depthto:6 -->
 
 - [Description assignment](#description-assignment)
+- [Prerequisites](#prerequisites)
 - [Quickstart](#quickstart)
 - [Usage](#usage)
   - [First login to the server and setting up an SSH key](#first-login-to-the-server-and-setting-up-an-ssh-key)
@@ -20,7 +21,22 @@
 <!-- /TOC -->
 ## Description assignment
 
-This readme file describes how the project task ‘V-Server-Setup’ is solved as part of the DevSecOps course of the Developer Akademie.
+This document guides you through setting up an Ubuntu virtual machine. You will learn how to configure secure access with an SSH key, disable username and password logins, install the Nginx web server, and link the machine with your GitHub account.
+
+---
+
+## Prerequisites
+
+Before you begin this setup guide, please ensure you have the following in place:
+
+- An **Ubuntu Virtual Machine**: This guide assumes you already have a virtual machine provisioned with a recent version of the Ubuntu Server operating system.
+- **Server Credentials**: You must have the initial access details for your server, including:
+  - The server's public IP address.
+  - A username for an account on the server.
+  - The password associated with that user account.
+- **Sudo/Root Privileges**: The user account on the server must have sudo privileges to perform administrative tasks, such as installing software and editing system configuration files.
+- A **Local Machine with an SSH Client**: You will connect to the server from your own computer. You need a command-line terminal with an SSH client installed. Most modern operating systems (macOS, Linux, and Windows 10/11 via PowerShell or WSL) include an SSH client by default.
+- A **GitHub Account**: The final section of this guide requires a GitHub account to configure Git access from the server.
 
 ---
 
@@ -29,24 +45,74 @@ This readme file describes how the project task ‘V-Server-Setup’ is solved a
 Here you will find a brief description of how to set up a preconfigured VM server with Ubuntu operating system. A detailed description of the individual points can be found in the usage section below
 
 1. First Login and SSH Key Setup:
-    - Test the initial login via ssh `<your_username>@<your_ip>`.
-    - Generate a new SSH key locally (e.g., with `ssh-keygen -t ed25519`).
-    - Copy the public key to the server using `ssh-copy-id`.
+    - Test the initial login via
+
+      ```bash
+      ssh <your_username>@<your_ip>
+      ```
+
+    - Generate a new SSH key locally
+
+      ```bash
+      ssh-keygen -t ed25519
+      ```
+
+    - Copy the public key to the server using
+
+      ```bash
+      ssh-copy-id
+      ```
+
 2. Disable Password Login:
     - Edit the `/etc/ssh/sshd_config` file on the server.
     - Change `PasswordAuthentication yes` to `PasswordAuthentication no` to disable login with username and password.
-    - Restart the SSH service using `sudo systemctl restart ssh.service`.
+    - Restart the SSH service using
+
+      ```bash
+      sudo systemctl restart ssh.service
+      ```
+
 3. Install Nginx Web Server:
-    - Update the package lists with `sudo apt update`.
-    - Install Nginx with `sudo apt install nginx -y`.
-    - Check the status with `sudo systemctl status nginx.service`.
+    - Update the package lists with
+
+      ```bash
+      sudo apt update
+      ```
+
+    - Install Nginx with
+
+      ```bash
+      sudo apt install nginx -y
+      ```
+
+    - Check the status with
+
+      ```bash
+      sudo systemctl status nginx.service
+      ```
+
 4. Configure Nginx for an Alternative Start Page:
     - Create a new HTML file (e.g., alternate-index.html) in the web directory (e.g., `/var/www/html/web/`).
     - Create a new Nginx configuration file under `/etc/nginx/sites-enabled/` (e.g., web) that points to the new page and a different port (e.g., 8081).
-    - Restart Nginx with `sudo service nginx restart`.
+    - Restart Nginx with
+
+      ```bash
+      sudo service nginx restart
+      ```
+
 5. Set Up Git on the Server:
-    - Check if Git is installed, `git --version`.
-    - Generate a new SSH key on the VM server with `ssh-keygen -t ed25519`.
+    - Check if Git is installed,
+
+      ```bash
+      git --version
+      ```
+
+    - Generate a new SSH key on the VM server with
+
+      ```bash
+      ssh-keygen -t ed25519
+      ```
+
     - Add the public key `~/.ssh/<your_file_name>.pub` to your GitHub account.
 
 ---

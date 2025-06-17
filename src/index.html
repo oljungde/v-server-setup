@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -12,166 +12,214 @@
 <body>
 
     <div class="container">
-        <h1>V-Server setup</h1>
+        <h1>V-Server Setup</h1>
 
-        <h2>Description assignment</h2>
-        <p>This readme file describes how the project task ‘V-Server-Setup’ is solved as part of the DevSecOps course of
-            the Developer Akademie.</p>
+        <!-- TOC from Markdown -->
+        <div class="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#description-assignment">Description assignment</a></li>
+                <li><a href="#prerequisites">Prerequisites</a></li>
+                <li><a href="#quickstart">Quickstart</a></li>
+                <li><a href="#usage">Usage</a>
+                    <ul>
+                        <li><a href="#first-login">First login to the server and setting up an SSH key</a></li>
+                        <li><a href="#deactivate-password">Deactivate password login</a></li>
+                        <li><a href="#webserver-config">Webserver configuration with nginx</a></li>
+                        <li><a href="#git-setup">Git setup</a></li>
+                        <li><a href="#publication">Publication of this documentation as a website</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
 
         <hr>
 
-        <h2>First login to the server and setting up an SSH key</h2>
+        <h2 id="description-assignment">Description assignment</h2>
+        <p>This document guides you through setting up an Ubuntu virtual machine. You will learn how to configure secure
+            access with an SSH key, disable username and password logins, install the Nginx web server, and link the
+            machine with your GitHub account.</p>
 
-        <h3>Test login on the server</h3>
+        <hr>
+
+        <h2 id="prerequisites">Prerequisites</h2>
+        <p>Before you begin this setup guide, please ensure you have the following in place:</p>
         <ul>
-            <li>To test the login on the server, try to log on to the server via ssh with username and password. Open a
-                command line such as <code>cmd</code> or <code>git-bash</code>. Use the following command to establish a
-                connection to your server:
+            <li><strong>An Ubuntu Virtual Machine:</strong> This guide assumes you already have a virtual machine
+                provisioned with a recent version of the Ubuntu Server operating system.</li>
+            <li><strong>Server Credentials:</strong> You must have the initial access details for your server, including
+                the server's public IP address, a username, and the associated password.</li>
+            <li><strong>Sudo/Root Privileges:</strong> The user account on the server must have <code>sudo</code>
+                privileges to perform administrative tasks.</li>
+            <li><strong>A Local Machine with an SSH Client:</strong> You need a command-line terminal with an SSH client
+                installed (common in macOS, Linux, and modern Windows).</li>
+            <li><strong>A GitHub Account:</strong> The final section of this guide requires a GitHub account to
+                configure Git access from the server.</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="quickstart">Quickstart</h2>
+        <p>Here you will find a brief description of how to set up a preconfigured VM server with an Ubuntu operating
+            system. A detailed description of the individual points can be found in the usage section below.</p>
+        <ol>
+            <li><strong>First Login and SSH Key Setup:</strong>
+                <ul>
+                    <li>Test the initial login via <code>ssh &lt;your_username&gt;@&lt;your_ip&gt;</code></li>
+                    <li>Generate a new SSH key locally: <code>ssh-keygen -t ed25519</code></li>
+                    <li>Copy the public key to the server using <code>ssh-copy-id</code></li>
+                </ul>
+            </li>
+            <li><strong>Disable Password Login:</strong>
+                <ul>
+                    <li>Edit the <code>/etc/ssh/sshd_config</code> file on the server.</li>
+                    <li>Change <code>PasswordAuthentication yes</code> to <code>PasswordAuthentication no</code>.</li>
+                    <li>Restart the SSH service: <code>sudo systemctl restart ssh.service</code></li>
+                </ul>
+            </li>
+            <li><strong>Install Nginx Web Server:</strong>
+                <ul>
+                    <li>Update packages: <code>sudo apt update</code></li>
+                    <li>Install Nginx: <code>sudo apt install nginx -y</code></li>
+                    <li>Check the status: <code>sudo systemctl status nginx.service</code></li>
+                </ul>
+            </li>
+            <li><strong>Configure Nginx for an Alternative Start Page:</strong>
+                <ul>
+                    <li>Create a new HTML file in a web directory (e.g.,
+                        <code>/var/www/html/web/alternate-index.html</code>).
+                    </li>
+                    <li>Create a new Nginx configuration file under <code>/etc/nginx/sites-enabled/</code> that points
+                        to the new page and a different port (e.g., 8081).</li>
+                    <li>Restart Nginx: <code>sudo service nginx restart</code></li>
+                </ul>
+            </li>
+            <li><strong>Set Up Git on the Server:</strong>
+                <ul>
+                    <li>Generate a new SSH key on the VM server: <code>ssh-keygen -t ed25519</code></li>
+                    <li>Add the public key (<code>~/.ssh/&lt;your_file_name&gt;.pub</code>) to your GitHub account.</li>
+                </ul>
+            </li>
+        </ol>
+
+        <hr>
+
+        <h2 id="usage">Usage</h2>
+
+        <h3 id="first-login"><u>First login to the server and setting up an SSH key</u></h3>
+        <h4><u>Test login on the server</u></h4>
+        <ul>
+            <li>To test the login, try to connect to the server via SSH with your username and password. Open a command
+                line and use the following command:
                 <pre><code>ssh &lt;your_username&gt;@&lt;your_ip&gt;</code></pre>
-                Replace <code>&lt;your_username&gt;</code> and <code>&lt;your_ip&gt;</code> with your actual login data,
-                e.g.:
-                <pre><code>ssh jdoe@555.555.555.555</code></pre>
+                Replace the placeholders with your actual login data, e.g.:
+                <pre><code>ssh jdoe@123.456.789.0</code></pre>
             </li>
-            <li>For the first time of login you will see a message, that you are unknown for the server. You have to
-                "create" a fingerprint on the server:
-                <img src="./img/fingerprint.png" alt="fingerprint">
+            <li>On your first login, you will see a message about the server's authenticity. You need to confirm the
+                fingerprint by typing <code>yes</code>.
+                <img src="./img/fingerprint.png" alt="SSH fingerprint confirmation prompt">
             </li>
-            <li>Type <code>yes</code> in the command shell.</li>
-            <li>After this you have to authenticate with your password. Now you should see something like this in your
-                command shell:
-                <img src="./img/logged_in.png" alt="logged-in">
+            <li>After confirming, authenticate with your password. You should now be logged into your server.
+                <img src="./img/logged_in.png" alt="Successful login to the server shell">
             </li>
-            <li>Congratulations, you are logged in! Please open a new local terminal or logout from the server with:
+            <li>Congratulations! You can now log out by typing:
                 <pre><code>logout</code></pre>
             </li>
         </ul>
 
-        <h3>Generate a ssh key and deposit it on the server</h3>
-
-        <h4>ssh key generation</h4>
+        <h4><u>Generate an SSH key and deposit it on the server</u></h4>
         <div class="warning">
             <strong>WARNING</strong><br>
-            To generate a ssh key use a new command line on your <u><strong>local machine</strong></u>
+            To generate an SSH key, use a new command line on your <u><strong>local machine</strong></u>.
         </div>
         <pre><code>ssh-keygen -t ed25519</code></pre>
-        <p>The system will ask you under which file path the new ssh key should be saved. You can also secure the key
-            with a password. If you want to do this, make sure that you keep this password safe. If you want to use a
-            small password, simply confirm with the <code>Enter</code> key</p>
-        <ul>
-            <li>After creating your key, you will see the following in the shell.
-                <img src="./img/create_ssh_key.png" alt="create_ssh_key">
-            </li>
-        </ul>
+        <p>The system will ask where to save the new SSH key. You can also secure the key with a passphrase. If you do,
+            keep it safe. To proceed without a passphrase, just press <code>Enter</code>.</p>
+        <img src="./img/create_ssh_key.png" alt="SSH key generation process in terminal">
 
-        <h4>Copy ssh key to VM-Server</h4>
+        <h4><u>Copy SSH key to VM-Server</u></h4>
         <ul>
-            <li>To copy the generated ssh to your VM use the following command. Make sure you are on your local machine
-                command line:
-                <pre><code># ssh-copy-id -i &lt;path/to/your/key&gt; &lt;user&gt;@&lt;host&gt;
-
+            <li>To copy the generated public key to your VM, use the following command on your local machine:
+                <pre><code># ssh-copy-id -i &lt;path/to/your/key.pub&gt; &lt;user&gt;@&lt;host&gt;
 ssh-copy-id -i ~/.ssh/da_cloud_vm_ed25519.pub ojung@116.203.78.54</code></pre>
             </li>
-            <li>You have to confirm this action by entering your password für the virtual machine again. After this you
-                will the the following output in the terminal.
-                <img src="./img/copy_ssh_vm.png" alt="copy_ssh_vm">
+            <li>You will be prompted to enter your password for the virtual machine one last time.
+                <img src="./img/copy_ssh_vm.png" alt="Output of ssh-copy-id command">
             </li>
-            <li>Now, you can login to the cloud machine:
+            <li>Now, you can log in to the server using your SSH key:
                 <pre><code># ssh -i &lt;~/path/to/key&gt; &lt;user@host&gt;
-
 ssh -i ~/.ssh/da_cloud_vm_ed25519 ojung@116.203.78.54</code></pre>
             </li>
         </ul>
 
         <hr>
 
-        <h2>Deactivate password login</h2>
-        <p>For security reasons, it is advisable to deactivate the password login on the VM. For example, a password can
-            be cracked using a brute force attack.</p>
+        <h3 id="deactivate-password"><u>Deactivate password login</u></h3>
+        <p>For security reasons, it is advisable to disable password login on the VM to protect against brute-force
+            attacks.</p>
         <ul>
-            <li>Make sure, you are logged in to the VM-Server. now editing the ssh config file. To edit this config file
-                administration right on the VM are needed, so we need a <code>sudo</code> in front of the command:
+            <li>Make sure you are logged into the VM. Edit the SSH config file with administrative rights:
                 <pre><code>sudo nano /etc/ssh/sshd_config</code></pre>
             </li>
-            <li>The nano editor is opened, now change this line:<br>
-                <code>#PasswordAuthentication yes</code><br>
-                to<br>
-                <code>PasswordAuthentication no</code>
+            <li>In the nano editor, find the line <code>#PasswordAuthentication yes</code> and change it to
+                <code>PasswordAuthentication no</code> (remove the <code>#</code> as well).
             </li>
-            <li>To save the file use <code>CTRL+S</code> and close it with <code>CTRL+X</code></li>
-            <li>Restart the ssh service with:<br>
-                <code>sudo systemctl restart ssh.service</code>
+            <li>Save the file with <code>CTRL+S</code> and exit with <code>CTRL+X</code>.</li>
+            <li>Restart the SSH service to apply the changes:
+                <pre><code>sudo systemctl restart ssh.service</code></pre>
             </li>
-            <li>You can check if the ssh service is running with:<br>
-                <code>sudo systemctl status ssh.service</code>
+            <li>You can check the service status to ensure it's running correctly:
+                <pre><code>sudo systemctl status ssh.service</code></pre>
+                <img src="./img/restart_ssh.png" alt="Status of the SSH service after restart">
             </li>
-            <li>The answer from the server should look like this:
-                <img src="./img/restart_ssh.png" alt="restart_ssh">
-            </li>
-            <li>You can check if the login with a password is possible with the command:
-                <pre><code># ssh -o PubkeyAuthentication=no &lt;user&gt;@&lt;host&gt;
-
-ssh -o PubkeyAuthentication=no ojung@116.203.78.54</code></pre>
-                You see something like this?
-                <img src="./img/no_password_access.png" alt="no_password_access">
-                Perfect, this is exactly what we want.
+            <li>To verify that password login is disabled, try to connect with this command:
+                <pre><code>ssh -o PubkeyAuthentication=no ojung@116.203.78.54</code></pre>
+                You should see a "Permission denied (publickey)" message. This is the desired outcome.
+                <img src="./img/no_password_access.png"
+                    alt="Permission denied message, confirming password login is disabled">
             </li>
         </ul>
 
         <hr>
 
-        <h2>Webserver configuration with nginx</h2>
-        <p>A web server delivers static or dynamic files, for example for a web application or a website. nginx is used
-            for this server, another option would be Apache, for example.</p>
-
-        <h3>Install nginx</h3>
+        <h3 id="webserver-config"><u>Webserver configuration with nginx</u></h3>
+        <p>A web server delivers files for a website or web application. This guide uses Nginx, a popular alternative to
+            Apache.</p>
+        <h4><u>Install nginx</u></h4>
         <ul>
-            <li>To use the VM as a Webserver it is needed to install nginx. First it is recommended to update the
-                installed packages on the VM. Use:
+            <li>First, update the package lists on the VM:
                 <pre><code>sudo apt update</code></pre>
             </li>
-            <li>Install nginx with:
+            <li>Install Nginx:
                 <pre><code>sudo apt install nginx -y</code></pre>
             </li>
-            <li>You can then check whether nginx is now running:
+            <li>Check if Nginx is running:
                 <pre><code>sudo systemctl status nginx.service</code></pre>
+                <img src="./img/running_nginx.png" alt="Status of the Nginx service showing it is active">
             </li>
-            <li>You should see an output in your command line like this:
-                <img src="./img/running_nginx.png" alt="running_nginx">
-            </li>
-            <li>Now it is possible to check if the web server is running as expectet. Open your browser and enter the IP
-                address of your Server, e.g. <code>116.203.78.54</code>. You the a website like this?
-                <img src="./img/webserver_running.png" alt="webserver_running">
+            <li>To see it in action, open a browser and navigate to your server's IP address (e.g.,
+                <code>http://116.203.78.54</code>). You should see the default Nginx welcome page.
+                <img src="./img/webserver_running.png" alt="Default Nginx welcome page in a browser">
             </li>
         </ul>
 
-        <h3>Alternative nginx configuration</h3>
+        <h4><u>Alternative nginx configuration</u></h4>
         <ul>
-            <li>To see the code of the nginx start page, it is possible zo use the <code>cat</code> command on the VM:
-                <pre><code>sudo cat /var/www/html/index.nginx-debian.html</code></pre>
+            <li>Create a new folder for an alternative site:
+                <pre><code>sudo mkdir -p /var/www/html/web</code></pre>
             </li>
-            <li>Now the HTML code of the page is displayed in the command line:
-                <img src="./img/nginx-html.png" alt="nginx-html">
-            </li>
-            <li>Create a new folder for the alternative start page:
-                <pre><code>sudo mkdir /var/www/html/web</code></pre>
-            </li>
-            <li>Create a new empty HTML file. This page wird the new start page for our nginx setup.
-                <pre><code>sudo touch /var/www/html/web/alternate-index.html</code></pre>
-            </li>
-            <li>Edit the HTML code of this page with <code>nano</code>
+            <li>Create and edit a new HTML file for this site:
                 <pre><code>sudo nano /var/www/html/web/alternate-index.html</code></pre>
-                After the edit the code could lock like this:
-                <img src="./img/new_html.png" alt="new_html">
+                Add some basic HTML content to this file.
             </li>
-            <li>Save the file with <code>CTRL+S</code> and leave the editor with <code>CTRL+X</code></li>
-            <li>Add a new nginx configuration for the enabled sites
+            <li>Create a new Nginx configuration file for this site:
                 <pre><code>sudo nano /etc/nginx/sites-enabled/web</code></pre>
-                Enter the following to this file:
+                Enter the following configuration to listen on a new port (e.g., 8081):
                 <pre><code>server {
       listen 8081;
       listen [::]:8081;
 
-      root /var/www/http/alternatives;
+      root /var/www/html/web;
       index alternate-index.html;
 
       location / {
@@ -179,147 +227,75 @@ ssh -o PubkeyAuthentication=no ojung@116.203.78.54</code></pre>
       }
 }</code></pre>
             </li>
-            <li>Restart the nginx service with:<br>
-                <code>sudo service nginx restart</code>
-            </li>
-            <li>Check if the service is restarted an is running with:<br>
-                <code>sudo systemctl status nginx.service</code>
-            </li>
-            <li>If it is desired that the old nginx start page is no longer accessible, it is possible to set up a port
-                forwarding for the default nginx configuration.
-                <ul>
-                    <li>Open the default nginx configuration with:
-                        <pre><code>sudo nano /etc/nginx/sites-enabled/default</code></pre>
-                    </li>
-                    <li>Lock for the <code>location</code> entry and add these lines:
-                        <pre><code># Port forwarding to 8081
-proxy_pass http://127.0.0.1:8081</code></pre>
-                    </li>
-                    <li>Your file should lock like this:
-                        <pre><code># ... some comments and commented out settings above
-server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
-
-        # SSL configuration
-        #
-        # listen 443 ssl default_server;
-        # listen [::]:443 ssl default_server;
-        #
-        # Note: You should disable gzip for SSL traffic.
-        # See: https://bugs.debian.org/773332
-        #
-        # Read up on ssl_ciphers to ensure a secure configuration.
-        # See: https://bugs.debian.org/765782
-        #
-        # Self signed certs generated by the ssl-cert package
-        # Don't use them in a production server!
-        #
-        # include snippets/snakeoil.conf;
-
-        root /var/www/html;
-
-        # Add index.php to the list if you are using PHP
-        index index.html index.htm index.nginx-debian.html;
-
-        server_name _;
-
-        location / {
-                # Port forwarding to 8081
-                proxy_pass http://127.0.0.1:8081/;
-                # First attempt to serve request as file, then
-                # as directory, then fall back to displaying a 404.
-                try_files $uri $uri/ =404;
-        }
-
-        # ... some more comments and commented out settings below
-}</code></pre>
-                    </li>
-                </ul>
+            <li>Restart the Nginx service:
+                <pre><code>sudo service nginx restart</code></pre>
             </li>
         </ul>
 
         <hr>
 
-        <h2>Git setup</h2>
+        <h3 id="git-setup"><u>Git setup</u></h3>
         <ul>
-            <li>Check if git is installed on the server with <code>git --version</code>. You should see something like
-                this in your terminal:
-                <img src="./img/git-version.png" alt="git-version">
+            <li>Check if Git is installed on the server: <code>git --version</code>.
+                <img src="./img/git-version.png" alt="Git version output in the terminal">
             </li>
-            <li>Create a new ssh key on the VM server:
+            <li>Create a new SSH key on the VM server specifically for Git:
                 <pre><code>ssh-keygen -t ed25519</code></pre>
-                Confirm the save path and file name or adjust it according to your wishes. You can also assign a
-                password if you wish. This process has already been described above when the ssh key was created for the
-                local machine.
             </li>
-            <li>Open the public ssh key an copy it with <code>sudo cat ~/.ssh/&lt;your_file_name&gt;.pub</code>
+            <li>Display the public key and copy its content:
+                <pre><code>cat ~/.ssh/&lt;your_file_name&gt;.pub</code></pre>
                 <div class="warning">
                     <strong>WARNING</strong><br>
-                    For security reasons, always use the file with the <code>.pub</code> file extension
+                    For security reasons, always use the file with the <code>.pub</code> file extension.
                 </div>
             </li>
-            <li>Store the ssh key in your github account under <code>Settings/SSH and GPG keys</code>
-                <img src="./img/github-ssh.png" alt="github-ssh">
-                Now it is possible to work with git on the VM-Server.
+            <li>In your GitHub account, go to <code>Settings &gt; SSH and GPG keys</code> and add the new public key.
+                <img src="./img/github-ssh.png" alt="Adding a new SSH key in GitHub settings">
+                You can now work with your Git repositories on the VM server.
             </li>
         </ul>
 
         <hr>
 
-        <h2>Publication of this documentation as a website [Additional configuration (optional)]</h2>
+        <h3 id="publication"><u>Publication of this documentation as a website (Optional)</u></h3>
+        <p>This section describes how to serve this documentation as a live website using Nginx.</p>
         <ul>
-            <li>Create new folder <code>vm-setup</code> inside the <code>web</code> folder
+            <li>Create a new folder for the project:
                 <pre><code>sudo mkdir /var/www/html/web/vm-setup</code></pre>
             </li>
-            <li>Navigate to this folder with <code>cd /var/www/html/web/vm-setup</code></li>
-            <li>Clone the repository into this folder:
-                <pre><code>sudo git clone https://github.com/oljungde/v-server-setup.git .</code></pre>
+            <li>Navigate into the new folder and clone the repository:
+                <pre><code>cd /var/www/html/web/vm-setup
+sudo git clone https://github.com/oljungde/v-server-setup.git .</code></pre>
             </li>
-            <li>Edit the nginx configuration for web
-                <pre><code>sudo nano /etc/nginx/sites-enabled/web</code></pre>
-                <ul>
-                    <li>Change the file content to:
-                        <pre><code>server {
+            <li>Edit the Nginx configuration file (<code>/etc/nginx/sites-enabled/web</code>) to act as a reverse proxy:
+                <pre><code>server {
   listen 80;
   listen [::]:80;
-
   server_name _;
-
   location / {
       proxy_pass http://127.0.0.1:8081;
-
       proxy_set_header Host $host;
       proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header X-Forwarded-Proto $scheme;
   }
 }
 
 server {
   listen 8081;
   listen [::]:8081;
-
   root /var/www/html/web;
-  index alternate-index.html index.html;
-
+  index index.html alternate-index.html;
   location / {
       try_files $uri $uri/ =404;
   }
 }</code></pre>
-                    </li>
-                    <li>The first server block serves as a reverse proxy and ensures that all requests arriving at port
-                        80 are forwarded to port 8081.</li>
-                    <li>The second server block is the actual web server configuration, which can be accessed via the
-                        proxy.</li>
-                </ul>
             </li>
-            <li>Delete the default nginx configuration, otherwise our site would still not be accessible
+            <li>Delete the default Nginx configuration to avoid conflicts:
                 <pre><code>sudo rm /etc/nginx/sites-enabled/default</code></pre>
             </li>
-            <li>Restart the nginx service with <code>sudo systemctl restart nginx.service</code></li>
-            <li>The modified "nginx homepage" is now available at <code>http://116.203.78.54</code> and this
-                documentation is available as a website at <code>http://116.203.78.54/vm-setup</code></li>
+            <li>Restart Nginx one last time:
+                <pre><code>sudo systemctl restart nginx.service</code></pre>
+                The documentation should now be available at <code>http://&lt;your_ip&gt;/vm-setup/</code>.
+            </li>
         </ul>
 
     </div>

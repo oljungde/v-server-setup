@@ -1,8 +1,6 @@
 body {
     background-color: #0a0a14;
-    /* Dein gewünschtes tiefes Violett-Blau */
     color: #e0e0e6;
-    /* Helle, gut lesbare Textfarbe */
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.6;
     margin: 0;
@@ -14,7 +12,6 @@ body {
     margin: 40px auto;
     padding: 20px;
     background-color: #14141f;
-    /* Etwas hellerer Container-Hintergrund */
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     border: 1px solid #2c2c3d;
@@ -24,7 +21,6 @@ h1,
 h2,
 h3 {
     color: #ffffff;
-    /* Sanftes Lavendel/Blau für Überschriften */
     border-bottom: 1px solid #2c2c3d;
     padding-bottom: 10px;
 }
@@ -43,9 +39,15 @@ h3 {
     margin-top: 30px;
 }
 
+h4 {
+    font-size: 1.2em;
+    margin-top: 25px;
+    color: #e0e0e6; /* Etwas weniger prominent als h3 */
+    border-bottom: none;
+}
+
 a {
     color: #b3c5ff;
-    /* Helles Blau für Links */
     text-decoration: none;
 }
 
@@ -64,7 +66,6 @@ code {
 
 pre {
     background-color: #0f0f1a;
-    /* Sehr dunkler Hintergrund für Code-Blöcke */
     border: 1px solid #2c2c3d;
     padding: 16px;
     border-radius: 6px;
@@ -93,7 +94,7 @@ hr {
     margin: 40px 0;
 }
 
-ul {
+ul, ol {
     padding-left: 20px;
 }
 
@@ -111,4 +112,21 @@ li {
 
 .warning strong {
     color: #f8ba51;
+}
+
+.toc {
+    background-color: #1a1a2a;
+    border: 1px solid #2c2c3d;
+    padding: 15px 25px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.toc ul {
+    padding-left: 20px;
+}
+
+.toc ul ul {
+    padding-left: 25px;
+    font-size: 0.9em;
 }
